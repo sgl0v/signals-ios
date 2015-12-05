@@ -29,18 +29,18 @@
 @protocol TestProtocol
 @end
 
-CreateSignalType(Tuple, NSString *stringData, NSString *otherStringData)
-CreateSignalType(Triple, NSString *string1, NSString *string2, NSNumber *number1)
-CreateSignalType(Quadruple, NSString *string1, NSString *string2, NSNumber *number1, NSNumber *number2)
-CreateSignalType(Complex, NSNumber *number1, NSNumber *number2, NSNumber *number3, NSNumber *number4, NSNumber *number5)
+CreateSignalType(Tuple, NSString * __nullable stringData, NSString * __nullable otherStringData)
+CreateSignalType(Triple, NSString * __nullable string1, NSString * __nullable string2, NSNumber * __nullable number1)
+CreateSignalType(Quadruple, NSString * __nullable string1, NSString * __nullable string2, NSNumber * __nullable number1, NSNumber * __nullable number2)
+CreateSignalType(Complex, NSNumber * __nullable number1, NSNumber * __nullable number2, NSNumber * __nullable number3, NSNumber * __nullable number4, NSNumber * __nullable number5)
 
 @interface UBSignalEmitter : NSObject
 
-@property (nonatomic, readonly) UBSignal<EmptySignal> *onEmptySignal;
-@property (nonatomic, readonly) UBSignal<IntegerSignal> *onIntegerSignal;
-@property (nonatomic, readonly) UBSignal<TupleSignal> *onStringSignal;
-@property (nonatomic, readonly) UBSignal<TripleSignal> *onTripleSignal;
-@property (nonatomic, readonly) UBSignal<QuadrupleSignal> *onQuardrupleSignal;
-@property (nonatomic, readonly) UBSignal<ComplexSignal> *onComplexSignal;
+@property (nonatomic, readonly, nonnull) UBSignal<EmptySignal> *onEmptySignal;
+@property (nonatomic, readonly, nonnull) UBSignal<IntegerSignal> *onIntegerSignal;
+@property (nonatomic, readonly, nonnull) UBSignal<TupleSignal> *onStringSignal;
+@property (nonatomic, readonly, nonnull) UBSignal<TripleSignal> *onTripleSignal;
+@property (nonatomic, readonly, nonnull) UBSignal<QuadrupleSignal> *onQuardrupleSignal;
+@property (nonatomic, readonly, nonnull) UBSignal<ComplexSignal> *onComplexSignal;
 
 @end

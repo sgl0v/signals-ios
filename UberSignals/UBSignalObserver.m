@@ -38,6 +38,12 @@
 
 - (instancetype)initWithSignal:(UBSignal *)signal observer:(id)observer callback:(UBSignalCallback)callback
 {
+    NSParameterAssert(signal);
+    NSParameterAssert(observer);
+    NSParameterAssert(callback);
+    if (signal == nil || observer == nil || callback == nil) {
+        return nil;
+    }
     self = [super self];
     if (self) {
         _signal = signal;

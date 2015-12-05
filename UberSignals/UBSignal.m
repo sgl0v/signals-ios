@@ -55,6 +55,10 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
 
 - (instancetype)initWithProtocol:(Protocol *)protocol
 {
+    NSParameterAssert(protocol);
+    if (protocol == nil) {
+        return nil;
+    }
     self = [super init];
     if (self) {
         _signalObservers = [NSMutableArray array];
@@ -203,6 +207,7 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
 
 - (void)removeSignalObserver:(UBSignalObserver *)signalObserver
 {
+    NSParameterAssert(signalObserver);
     @synchronized(_signalObservers) {
         [_signalObservers removeObject:signalObserver];
     }
@@ -214,6 +219,7 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
 
 - (BOOL)firePastDataForSignalObserver:(UBSignalObserver *)signalObserver
 {
+    NSParameterAssert(signalObserver);
     NSArray *data;
     @synchronized(_signalObservers) {
         data = [_lastData copy];

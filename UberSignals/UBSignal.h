@@ -37,6 +37,8 @@
 #define CreateSignalType(name, signature...)\
     CreateSignalType_(PP_NARG(signature),name,signature)
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  A special type of signal that doesn't have any parameters.
  */
@@ -63,32 +65,34 @@
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 /** An Signal type that fires an Integer as a NSNumber */
-CreateSignalType(Integer, NSNumber *number);
+CreateSignalType(Integer, NSNumber * __nullable number);
 
 /** An Signal type that fires a Float as a NSNumber */
-CreateSignalType(Float, NSNumber *number);
+CreateSignalType(Float, NSNumber * __nullable number);
 
 /** An Signal type that fires an Double as a NSNumber */
-CreateSignalType(Double, NSNumber *number);
+CreateSignalType(Double, NSNumber * __nullable number);
 
 /** An Signal type that fires an Boolean as a NSNumber */
-CreateSignalType(Boolean, NSNumber *number);
+CreateSignalType(Boolean, NSNumber * __nullable number);
 
 /** An Signal type that fires an NSString */
-CreateSignalType(String, NSString *string);
+CreateSignalType(String, NSString * __nullable string);
 
 /** An Signal type that fires an NSArray */
-CreateSignalType(Array, NSArray *array);
+CreateSignalType(Array, NSArray * __nullable array);
 
 /** An Signal type that fires a NSMutableArray */
-CreateSignalType(MutableArray, NSMutableArray *mutableArray);
+CreateSignalType(MutableArray, NSMutableArray * __nullable mutableArray);
 
 /** An Signal type that fires a NSDictionary */
-CreateSignalType(Dictionary, NSDictionary *dictionary);
+CreateSignalType(Dictionary, NSDictionary * __nullable dictionary);
 
 /** An Signal type that fires a NSMutableDictionary */
-CreateSignalType(MutableDictionary, NSMutableDictionary *mutableDictionary);
+CreateSignalType(MutableDictionary, NSMutableDictionary * __nullable mutableDictionary);
 
 /**
  A Signal represents a type of event that Observable objects implement and fire and Observers listen to. 
@@ -104,6 +108,8 @@ CreateSignalType(MutableDictionary, NSMutableDictionary *mutableDictionary);
  Signals will also detect deallocations of its observers, so it's not necessary to remove observers from Signals due to lifecycle changes.
  */
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef void (^UBSignalObserverChange)(UBSignalObserver *signalObserver);
 
 @interface UBSignal : NSObject
@@ -113,12 +119,12 @@ typedef void (^UBSignalObserverChange)(UBSignalObserver *signalObserver);
 /**
  Notifies when an observer was added to a Signal.
  */
-@property (nonatomic, strong) UBSignalObserverChange observerAdded;
+@property (nonatomic, strong, nullable) UBSignalObserverChange observerAdded;
 
 /**
  Notifies when an observer was removed from a Signal.
  */
-@property (nonatomic, strong) UBSignalObserverChange observerRemoved;
+@property (nonatomic, strong, nullable) UBSignalObserverChange observerRemoved;
 
 /**
  Helper factory method, constructs a Signal instance with the EmptySignal protocol.
@@ -145,3 +151,5 @@ typedef void (^UBSignalObserverChange)(UBSignalObserver *signalObserver);
 - (void)removeAllObservers;
 
 @end
+
+NS_ASSUME_NONNULL_END

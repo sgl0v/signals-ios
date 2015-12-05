@@ -32,7 +32,7 @@
 /*
  An opertion OperationQueue to dispath the callback on. If nil (default), the callback will be dispatched on the same queue as the signal fires on.
  */
-@property (nonatomic) NSOperationQueue *operationQueue;
+@property (nonatomic, nullable) NSOperationQueue *operationQueue;
 
 /*
  If YES, cancels the observer once the signal has fired the next time.

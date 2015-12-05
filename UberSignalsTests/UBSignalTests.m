@@ -26,6 +26,9 @@
 
 #import "UBSignalEmitter.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+
 @interface UBSignalTests : XCTestCase
 @end
 
@@ -724,3 +727,5 @@
 }
 
 @end
+
+#pragma clang diagnostic pop

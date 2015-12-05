@@ -50,12 +50,17 @@
 #define CreateSignalType_(signatureParameterCount, name, signature...)\
     CreateSignalType__(signatureParameterCount, name, signature)
 
+#pragma
+
 #define CreateSignalType__(signatureParameterCount, name, signature...)\
+    NS_ASSUME_NONNULL_BEGIN \
     @protocol name ## Signal <UBSignalArgumentCount ## signatureParameterCount>\
     - (UBSignalObserver *)addObserver:(NSObject *)observer callback:(void (^)(id self, signature))callback;\
     - (void (^)(signature))fire;\
     - (void (^)(UBSignalObserver *signalObserver, signature))fireForSignalObserver;\
-    @end
+    @end \
+    NS_ASSUME_NONNULL_END \
+
 
 @protocol UBSignalArgumentCount1 @end
 @protocol UBSignalArgumentCount2 @end

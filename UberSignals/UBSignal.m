@@ -41,6 +41,7 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
 @property (nonatomic, readonly) id fireForSignalObserver;
 @property (nonatomic, strong) NSMutableArray *signalObservers;
 @property (nonatomic, strong) NSArray *lastData;
+@property (nonatomic, strong) dispatch_queue_t operationQueue;
 
 @end
 
@@ -59,61 +60,99 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
     if (self) {
         _signalObservers = [NSMutableArray array];
         _maxObservers = 100;
+        dispatch_queue_attr_t qos_attr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, QOS_CLASS_UTILITY, 0);
+        _operationQueue = dispatch_queue_create("com.uber.signals.ios", qos_attr);
         
         __weak typeof(self) weakSelf = self;
         if (protocol_conformsToProtocol(protocol, @protocol(EmptySignal))) {
             _fire = (UBSignalFire) ^void() {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireData:nil forSignalObservers:strongSelf.signalObservers];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireData:nil forSignalObservers:self.signalObservers];
+                });
             };
             _fireForSignalObserver = (UBSignalFire) ^void(UBSignalObserver *signalObserver) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireData:nil forSignalObservers:@[signalObserver]];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireData:nil forSignalObservers:@[signalObserver]];
+                });
             };
         } else if (protocol_conformsToProtocol(protocol, @protocol(UBSignalArgumentCount1))) {
             _fire = ^void(id arg1) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1)] forSignalObservers:strongSelf.signalObservers];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1)] forSignalObservers:self.signalObservers];
+                });
             };
             _fireForSignalObserver = ^void(UBSignalObserver *signalObserver, id arg1) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1)] forSignalObservers:@[signalObserver]];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1)] forSignalObservers:@[signalObserver]];
+                });
             };
         } else if (protocol_conformsToProtocol(protocol, @protocol(UBSignalArgumentCount2))) {
             _fire = ^void(id arg1, id arg2) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2)] forSignalObservers:strongSelf.signalObservers];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2)] forSignalObservers:self.signalObservers];
+                });
             };
             _fireForSignalObserver = ^void(UBSignalObserver *signalObserver, id arg1, id arg2) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2)] forSignalObservers:@[signalObserver]];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2)] forSignalObservers:@[signalObserver]];
+                });
             };
         } else if (protocol_conformsToProtocol(protocol, @protocol(UBSignalArgumentCount3))) {
             _fire = ^void(id arg1, id arg2, id arg3) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3)] forSignalObservers:strongSelf.signalObservers];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3)] forSignalObservers:self.signalObservers];
+                });
             };
             _fireForSignalObserver = ^void(UBSignalObserver *signalObserver, id arg1, id arg2, id arg3) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3)] forSignalObservers:@[signalObserver]];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3)] forSignalObservers:@[signalObserver]];
+                });
             };
         } else if (protocol_conformsToProtocol(protocol, @protocol(UBSignalArgumentCount4))) {
             _fire = ^void(id arg1, id arg2, id arg3, id arg4) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4)] forSignalObservers:strongSelf.signalObservers];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4)] forSignalObservers:self.signalObservers];
+                });
             };
             _fireForSignalObserver = ^void(UBSignalObserver *signalObserver, id arg1, id arg2, id arg3, id arg4) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4)] forSignalObservers:@[signalObserver]];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4)] forSignalObservers:@[signalObserver]];
+                });
             };
         } else if (protocol_conformsToProtocol(protocol, @protocol(UBSignalArgumentCount5))) {
             _fire = ^void(id arg1, id arg2, id arg3, id arg4, id arg5) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4), WrapNil(arg5)] forSignalObservers:strongSelf.signalObservers];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4), WrapNil(arg5)] forSignalObservers:self.signalObservers];
+                });
             };
             _fireForSignalObserver = ^void(UBSignalObserver *signalObserver, id arg1, id arg2, id arg3, id arg4, id arg5) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [strongSelf _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4), WrapNil(arg5)] forSignalObservers:@[signalObserver]];
+                __strong typeof(weakSelf) self = weakSelf;
+                dispatch_async(self.operationQueue, ^{
+                    __strong typeof(weakSelf) self = weakSelf;
+                    [self _fireNewData:@[WrapNil(arg1), WrapNil(arg2), WrapNil(arg3), WrapNil(arg4), WrapNil(arg5)] forSignalObservers:@[signalObserver]];
+                });
             };
         } else {
             NSAssert(false, @"Protocol doesn't provide parameter count");
@@ -151,51 +190,58 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
 {
     NSParameterAssert(observer != nil);
     NSParameterAssert(callback != nil);
-    
     if (observer == nil && callback == nil) {
         return nil;
     }
-    
-    [self _purgeDeallocedListeners];
+
     UBSignalObserver *signalObserver = [[UBSignalObserver alloc] initWithSignal:self observer:observer callback:callback];
-    @synchronized(_signalObservers) {
+    __weak typeof(self) weakSelf = self;
+    dispatch_barrier_async(_operationQueue, ^{
+        typeof(weakSelf) self = weakSelf;
+
+        [self _purgeDeallocedListeners];
         [_signalObservers addObject:signalObserver];
         NSAssert(_signalObservers.count <= _maxObservers, @"Maximum observer count exceeded for this signal");
-    }
-    
-    if (self.observerAdded) {
-        self.observerAdded(signalObserver);
-    }
-    
+
+        if (self.observerAdded) {
+            self.observerAdded(signalObserver);
+        }
+    });
+
     return signalObserver;
 }
 
 - (void)removeObserver:(NSObject *)observer
 {
-    [self _purgeDeallocedListeners];
-    NSMutableArray *removedSignalObservers = [NSMutableArray array];
-    @synchronized(_signalObservers) {
-        for (UBSignalObserver *signalObserver in [_signalObservers copy]) {
+    __weak typeof(self) weakSelf = self;
+    dispatch_barrier_async(_operationQueue, ^{
+        typeof(weakSelf) self = weakSelf;
+
+        [self _purgeDeallocedListeners];
+        NSMutableArray *removedSignalObservers = [NSMutableArray array];
+        for (UBSignalObserver *signalObserver in _signalObservers) {
             if (signalObserver.observer == observer) {
                 [_signalObservers removeObject:signalObserver];
                 [removedSignalObservers addObject:signalObserver];
             }
         }
-    }
-    
-    if (removedSignalObservers.count &&
-        self.observerRemoved) {
-        for (UBSignalObserver *removedSignalObserver in removedSignalObservers) {
-            self.observerRemoved(removedSignalObserver);
+
+        if (removedSignalObservers.count && self.observerRemoved) {
+            for (UBSignalObserver *removedSignalObserver in removedSignalObservers) {
+                self.observerRemoved(removedSignalObserver);
+            }
         }
-    }
+    });
+
 }
 
 - (void)removeAllObservers
 {
-    @synchronized(_signalObservers) {
-        [_signalObservers removeAllObjects];
-    }
+    __weak typeof(self) weakSelf = self;
+    dispatch_barrier_async(_operationQueue, ^{
+        typeof(weakSelf) self = weakSelf;
+        [self.signalObservers removeAllObjects];
+    });
 }
 
 
@@ -203,28 +249,30 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
 
 - (void)removeSignalObserver:(UBSignalObserver *)signalObserver
 {
-    @synchronized(_signalObservers) {
+    __weak typeof(self) weakSelf = self;
+    dispatch_barrier_async(_operationQueue, ^{
+        typeof(weakSelf) self = weakSelf;
         [_signalObservers removeObject:signalObserver];
-    }
-    
-    if (self.observerRemoved) {
-        self.observerRemoved(signalObserver);
-    }
+        if (self.observerRemoved) {
+            self.observerRemoved(signalObserver);
+        }
+    });
 }
 
 - (BOOL)firePastDataForSignalObserver:(UBSignalObserver *)signalObserver
 {
-    NSArray *data;
-    @synchronized(_signalObservers) {
-        data = [_lastData copy];
-    }
-    
-    if (data) {
-        [self _fireData:data forSignalObservers:@[signalObserver]];
-        return YES;
-    }
-    
-    return NO;
+    __block BOOL isFired = NO;
+
+    __weak typeof(self) weakSelf = self;
+    dispatch_barrier_sync(_operationQueue, ^{
+        typeof(weakSelf) self = weakSelf;
+        if (_lastData) {
+            [self _fireData:_lastData forSignalObservers:@[signalObserver]];
+            isFired = YES;
+        }
+    });
+
+    return isFired;
 }
 
 
@@ -232,31 +280,27 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
 
 - (void)_purgeDeallocedListeners
 {
-    @synchronized(_signalObservers) {
-        NSMutableArray *deallocedListeners;
-        for (UBSignalObserver *signalObserver in [_signalObservers copy]) {
-            if (signalObserver.observer == nil) {
-                [_signalObservers removeObject:signalObserver];
-                
-                if (!deallocedListeners) {
-                    deallocedListeners = [NSMutableArray array];
-                }
-                [deallocedListeners addObject:signalObserver];
+    NSMutableArray *deallocedListeners;
+    for (UBSignalObserver *signalObserver in _signalObservers) {
+        if (signalObserver.observer == nil) {
+            [_signalObservers removeObject:signalObserver];
+            
+            if (!deallocedListeners) {
+                deallocedListeners = [NSMutableArray array];
             }
+            [deallocedListeners addObject:signalObserver];
         }
-        for (UBSignalObserver *removedObserver in deallocedListeners) {
-            if (self.observerRemoved) {
-                self.observerRemoved(removedObserver);
-            }
+    }
+    for (UBSignalObserver *removedObserver in deallocedListeners) {
+        if (self.observerRemoved) {
+            self.observerRemoved(removedObserver);
         }
     }
 }
 
 - (void)_fireNewData:(NSArray *)arguments forSignalObservers:(NSArray *)signalObsevers
 {
-    @synchronized(_signalObservers) {
-        _lastData = arguments;
-    }
+    _lastData = arguments;
     [self _fireData:arguments forSignalObservers:signalObsevers];
 }
 
@@ -281,11 +325,7 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
             arg1 = arguments[0] != [NSNull null] ? arguments[0] : nil;
     }
     
-    NSArray *signalObserversCopy;
-    @synchronized(_signalObservers) {
-        signalObserversCopy = [signalObservers copy];
-    }
-    for (UBSignalObserver *signalObserver in signalObserversCopy) {
+    for (UBSignalObserver *signalObserver in _signalObservers) {
         __strong id observer = signalObserver.observer;
         
         void (^fire)() = ^void() {
@@ -311,7 +351,7 @@ typedef void (^UBSignalFire) (id arg1, id arg2, id arg3, id arg4, id arg5);
             }
         };
         
-        if (signalObserver.operationQueue == nil || NSOperationQueue.currentQueue == signalObserver.operationQueue) {
+        if (signalObserver.operationQueue == nil) {
             fire();
         } else {
             [signalObserver.operationQueue addOperationWithBlock:^{

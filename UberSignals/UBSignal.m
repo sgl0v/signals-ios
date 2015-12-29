@@ -192,13 +192,12 @@
     }
     NSAssert(_signalObservers.count <= _maxObservers, @"Maximum observer count exceeded for this signal");
 
-    __block UBSignalObserver *signalObserver = nil;
+    UBSignalObserver *signalObserver = [[UBSignalObserver alloc] initWithSignal:self observer:observer callback:callback];
     weakself;
     dispatch_sync(_operationQueue, ^{
         strongself;
 
         [self _purgeDeallocedListeners];
-        signalObserver = [[UBSignalObserver alloc] initWithSignal:self observer:observer callback:callback];
         [_signalObservers addObject:signalObserver];
 
         if (self.observerAdded) {
@@ -212,17 +211,17 @@
 - (void)removeObserver:(NSObject *)observer
 {
     weakself;
-    dispatch_barrier_async(_operationQueue, ^{
+    dispatch_async(_operationQueue, ^{
         strongself;
 
         [self _purgeDeallocedListeners];
         NSMutableArray *removedSignalObservers = [NSMutableArray array];
         for (UBSignalObserver *signalObserver in _signalObservers) {
             if (signalObserver.observer == observer) {
-                [_signalObservers removeObject:signalObserver];
                 [removedSignalObservers addObject:signalObserver];
             }
         }
+        [_signalObservers removeObjectsInArray:removedSignalObservers];
 
         if (removedSignalObservers.count && self.observerRemoved) {
             for (UBSignalObserver *removedSignalObserver in removedSignalObservers) {
@@ -236,7 +235,7 @@
 - (void)removeAllObservers
 {
     weakself;
-    dispatch_barrier_async(_operationQueue, ^{
+    dispatch_async(_operationQueue, ^{
         strongself;
         [self.signalObservers removeAllObjects];
     });
@@ -248,7 +247,7 @@
 - (void)removeSignalObserver:(UBSignalObserver *)signalObserver
 {
     weakself;
-    dispatch_barrier_async(_operationQueue, ^{
+    dispatch_async(_operationQueue, ^{
         strongself;
         [_signalObservers removeObject:signalObserver];
         if (self.observerRemoved) {
